@@ -20,3 +20,10 @@ Executable looper
   CompiledObject:     byte
   Install:            false
   BuildDepends:       localStorage
+
+Executable filler
+  Path:               lib_test
+  MainIs:             filler.ml
+  CompiledObject:     byte
+  Install:            false
+  BuildDepends:       localStorage
