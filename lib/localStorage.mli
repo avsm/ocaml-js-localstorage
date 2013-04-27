@@ -23,8 +23,8 @@
     TODO: signal failure in set, which might fail due to a full storage. *)
 class type js_store =
   object
-    method get : Js.js_string Js.t -> Js.js_string Js.t option
-    method set : Js.js_string Js.t -> Js.js_string Js.t -> unit
+    method get : key:Js.js_string Js.t -> Js.js_string Js.t option
+    method set : key:Js.js_string Js.t -> Js.js_string Js.t -> exn option
   end
 
 (** Initialise a [js_store] using LocalStorage if availabl, and a

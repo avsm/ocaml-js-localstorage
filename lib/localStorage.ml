@@ -24,32 +24,43 @@ type jsstring = Js.js_string Js.t
 
 class type js_store =
   object
-     method get : jsstring -> jsstring option
-     method set : jsstring -> jsstring -> unit
+     method get : key:jsstring -> jsstring option
+     method set : key:jsstring -> jsstring -> exn option
+  end
+
+class type store =
+  object
+     method get : key:string -> string option
+     method set : key:string -> string -> exn option
   end
 
 let mem_store () : js_store =
   debug "Using memory storage";
   let h = Hashtbl.create 1 in
   object
-    method get k =
-      if Hashtbl.mem h k then
-        Some (Hashtbl.find h k)
+    method get ~key =
+      if Hashtbl.mem h key then
+        Some (Hashtbl.find h key)
       else
         None
 
-    method set k v =
-      Hashtbl.replace h k v
+    method set ~key v =
+      Hashtbl.replace h key v;
+      None
   end
 
 let html5_store ls : js_store =
   debug "Using HTML5 local storage";
   object
-    method get k =
-      Js.Opt.to_option ls##getItem(k)
+    method get ~key =
+      Js.Opt.to_option ls##getItem(key)
 
-    method set k v  =
-      ls##setItem(k,v)
+    method set ~key v  =
+      try
+        ls##setItem(key,v);
+        None
+      with exn ->
+        Some exn
   end
   
 let init_js () =
