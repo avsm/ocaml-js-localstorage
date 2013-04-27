@@ -21,7 +21,7 @@ let error f = Printf.ksprintf (fun s -> Firebug.console##error (Js.string s); fa
 let debug f = Printf.ksprintf (fun s -> Firebug.console##log(Js.string s)) f
 
 let localStorage () =
-  let st = LocalStorage.init () in
+  let st = LocalStorage.init_js () in
   let key = Js.string "testKey" in
   let rec looper n () =
     debug "loop %d" n;

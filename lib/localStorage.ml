@@ -1,5 +1,5 @@
 (*
- * Copyright (c) 2010 Anil Madhavapeddy <anil@recoil.org>
+ * Copyright (c) 2013 Anil Madhavapeddy <anil@recoil.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -52,7 +52,7 @@ let html5_store ls : js_store =
       ls##setItem(k,v)
   end
   
-let init () =
+let init_js () =
   try
     Js.Optdef.case 
       (Dom_html.window##localStorage) 
