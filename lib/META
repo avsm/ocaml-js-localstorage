@@ -1,0 +1,12 @@
+# OASIS_START
+# DO NOT EDIT (digest: e238a8e8e0fd4595b774ca200609c116)
+version = "1.0.0"
+description = "HTML5 LocalStorage bindings for js_of_ocaml"
+requires = "js_of_ocaml js_of_ocaml.syntax"
+archive(byte) = "localStorage.cma"
+archive(byte, plugin) = "localStorage.cma"
+archive(native) = "localStorage.cmxa"
+archive(native, plugin) = "localStorage.cmxs"
+exists_if = "localStorage.cma"
+# OASIS_STOP
+
