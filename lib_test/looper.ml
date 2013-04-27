@@ -25,9 +25,11 @@ let localStorage () =
   let key = Js.string "testKey" in
   let rec looper n () =
     debug "loop %d" n;
-    st#set key (Js.string (string_of_int n));
-    Lwt_js.sleep 1.0
-    >>= looper (succ n)
+    match st#set key (Js.string (string_of_int n)) with
+    |None ->
+      Lwt_js.sleep 1.0
+      >>= looper (succ n)
+    |Some exn -> fail exn
   in
   let startVal =
      match st#get key with
