@@ -32,12 +32,12 @@ let localStorage () =
     |Some exn -> fail exn
   in
   let startVal =
-     match st#get key with
-     |None -> debug "initialising key to 0"; 0
-     |Some k -> 
-      let v = int_of_string (Js.to_string k) in
-      debug "Found start key %d" v;
-      v
+     Js.Opt.case (st#get key)
+      (fun () -> debug "initialising key to 0"; 0)
+      (fun k ->
+        let v = int_of_string (Js.to_string k) in
+        debug "Found start key %d" v;
+        v)
   in
   looper startVal ()
 

@@ -20,55 +20,74 @@ open Js
 let error f = Printf.ksprintf (fun s -> Firebug.console##error (Js.string s); failwith s) f
 let debug f = Printf.ksprintf (fun s -> Firebug.console##log(Js.string s)) f
 
-type jsstring = Js.js_string Js.t
-
+(*
+class type localStorage =
+  object
+    method getItem : js_string t -> js_string t opt meth
+    method removeItem : js_string t -> unit meth
+    method length : int prop
+    method clear : unit meth
+    method setItem : js_string t -> js_string t -> unit meth
+  end
+*)
 class type js_store =
   object
-     method get : key:jsstring -> jsstring option
-     method set : key:jsstring -> jsstring -> exn option
+     method get : key:js_string t -> js_string t opt
+     method set : key:js_string t -> js_string t -> exn option
+     method remove : key:js_string t -> unit
+     method length : int
+     method clear : unit
   end
 
 class type store =
   object
-     method get : key:string -> string option
-     method set : key:string -> string -> exn option
+    method get : key:string -> string option
+    method set : key:string -> string -> exn option
+    method remove : key:string -> unit
+    method length : int
+    method clear : unit
   end
 
 let mem_store () : js_store =
   debug "Using memory storage";
-  let h = Hashtbl.create 1 in
+  let (h: (js_string t, js_string t) Hashtbl.t) = Hashtbl.create 1 in
   object
     method get ~key =
       if Hashtbl.mem h key then
-        Some (Hashtbl.find h key)
+        some (Hashtbl.find h key)
       else
-        None
+        null
 
-    method set ~key v =
-      Hashtbl.replace h key v;
-      None
+    method set ~key v = Hashtbl.replace h key v; None
+    method length = Hashtbl.length h
+    method clear = Hashtbl.clear h
+    method remove ~key = Hashtbl.remove h key
   end
 
-let html5_store ls : js_store =
+let html5_store (ls:Dom_html.storage t) : js_store =
   debug "Using HTML5 local storage";
   object
     method get ~key =
-      Js.Opt.to_option ls##getItem(key)
+      ls##getItem(key)
 
-    method set ~key v  =
+    method set ~key v =
       try
         ls##setItem(key,v);
         None
       with exn ->
         Some exn
+
+    method length = ls##length
+    method clear = ls##clear()
+    method remove ~key = ls##removeItem(key)
   end
   
 let init_js () =
   try
     Js.Optdef.case 
       (Dom_html.window##localStorage) 
-      (mem_store)
-      (fun ls -> html5_store ls)
+      mem_store
+      html5_store
   with exn ->
     (* This can be a DOM SecurityError *)
     mem_store ()
