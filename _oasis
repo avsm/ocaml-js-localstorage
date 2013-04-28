@@ -14,16 +14,16 @@ Library localStorage
   Modules: LocalStorage
   BuildDepends:	js_of_ocaml, js_of_ocaml.syntax
 
-Executable looper
+Executable localstorage_looper
   Path:               lib_test
-  MainIs:             looper.ml
+  MainIs:             localstorage_looper.ml
   CompiledObject:     byte
   Install:            false
   BuildDepends:       localStorage
 
-Executable filler
+Executable localstorage_filler
   Path:               lib_test
-  MainIs:             filler.ml
+  MainIs:             localstorage_filler.ml
   CompiledObject:     byte
   Install:            false
   BuildDepends:       localStorage
